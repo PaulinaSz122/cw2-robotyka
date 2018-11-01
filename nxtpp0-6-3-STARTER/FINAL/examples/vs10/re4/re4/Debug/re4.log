@@ -1,0 +1,13 @@
+﻿Build started 2013-01-09 09:46:37.
+     1>Project "C:\nxtpp0-6-1\FINAL\examples\vs10\re4\re4\re4.vcxproj" on node 2 (rebuild target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\re4.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\mindstorms_nxt\NXT++\nxtpp0-6\FINAL\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>c:\nxtpp0-6-1\final\examples\vs10\re4\re4\main.cpp(78): fatal error C1083: Cannot open include file: 'NXT++.h': No such file or directory
+     1>Done Building Project "C:\nxtpp0-6-1\FINAL\examples\vs10\re4\re4\re4.vcxproj" (rebuild target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:01.74
