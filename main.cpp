@@ -1,17 +1,17 @@
 #include "NXT++.h"
 #include <iostream>
 #include <conio.h>
-#include <math.h>
+#include <cmath>
 using namespace std;
 using namespace NXT;
 
 Comm::NXTComm comm;
 
-//PRZED U¯YCIEM SPRZETU DOK£ADNIE SPRAWDZAMY:
+/*//PRZED U¯YCIEM SPRZETU DOK£ADNIE SPRAWDZAMY: 
 //DO KTÓRYCH PORTÓW WEJŒCIOWYCH (IN) POD£¥CZONE S¥ SENSORY,\
 //DO KTÓRYCH PORTÓW WYJŒCIOWYCH (OUT) POD£¥CZONE S¥ SERVO-MOTORY,
 //STARAMY SIÊ PISAC KOD Z MO¯LIWOŒCI¥ ZATRZYMANIA ROBOTA W KA¯DEJ CHWILI,
-//ROBOT POWIENIEN BYC PRZEMIESZCZONY W MIEJSCE TESTÓW ZA POŒREDNICTWEM ZDALNEGO STEROWANIA,
+//ROBOT POWIENIEN BYC PRZEMIESZCZONY W MIEJSCE TESTÓW ZA POŒREDNICTWEM ZDALNEGO STEROWANIA,*/
 
 int main()
 {
@@ -23,16 +23,16 @@ int main()
 		cout<< "Sygnal znaleziony!";
 		cout<<"\nPoziom baterii = "<<NXT::BatteryLevel(&comm);
 		cout<<"\nDostepna pamiec flash = "<<NXT::GetAvailableFlash(&comm);
+		
+		int x=30;//szybkoœæ jazdy w przód i ty³
+		int xtemp=30;//potrzebna do sprawdzania czy predkosc sie zmienila
 
-		int x=15;//szybkoœæ jazdy w przód i ty³
-		int xtemp=15;//potrzebna do sprawdzania czy predkosc sie zmienila
-
-		int y=10;//szybkoœæ obrotu w lewo, prawo
-		int ytemp=10;//potrzebna do sprawdzania czy predkosc sie zmienila
+		int y=20;//szybkoœæ obrotu w lewo, prawo
+		int ytemp=20;//potrzebna do sprawdzania czy predkosc sie zmienila
 
 		char last_value;//zapamietana ostatnia instrukcja steruj¹ca
 
-        //Przed uzyciem sprawdzamy numer portu do którego jest podl¹czony sensor,
+        //Przed uzyciem sprawdzamy numer portu do którego jest podl¹czony sensor, 
 		NXT::Sensor::SetTouch(&comm, IN_1);//inicjacja sensora dotyku
 
 		//aktywacja czujnika koloru
@@ -46,16 +46,18 @@ int main()
 		char decyzja;
 
 		cout<<"\n ___Podstawowe sterowanie do uzupelnienia___";
-		cout<<"\n A - jazda w lewo";
-		cout<<"\n D - jazda w lewo";
-		cout<<"\n W - jazda na wprost";
-		cout<<"\n S - jazda do tylu";
+		cout<<"\n A - jazda w lewo"; 
+		cout<<"\n D - jazda w lewo"; 
+		cout<<"\n W - jazda na wprost"; 
+		cout<<"\n S - jazda do tylu"; 
+		cout<<"\n F - sledz linie (po lewej)"; 
+		cout<<"\n L - sledz linie (po po prawej)"; 
 		cout<<"\n H - Zatrzymanie silnikow";
 		cout<<"\nK - Koniec Programu";
 
 		do
 		{
-           //Przed uzyciem sprawdzamy numer portu do którego jest podl¹czony sensor,
+           //Przed uzyciem sprawdzamy numer portu do którego jest podl¹czony sensor, 
        /*
 		if(NXT::Sensor::GetValue(&comm, IN_1)==1)
 		    {
@@ -69,27 +71,27 @@ int main()
 
 		 if(kbhit()==true)
          {
-
+            
 		   decyzja=getch();
-
+	
 		   if(decyzja=='N' || decyzja=='n')
 		   {
-           x-=10;
+           x-=10; 
 		   }
 
 		   if(decyzja=='M' || decyzja=='m')
 		   {
-           x+=10;
+           x+=10; 
 		   }
 
 		   if(decyzja=='V' || decyzja=='v')
 		   {
-           y--;
+           y--; 
 		   }
 
 		   if(decyzja=='B' || decyzja=='b')
 		   {
-           y++;
+           y++; 
 		   }
           //Przed uzyciem serwo sprawdzamy numer portu do którego jest podl¹czony,
 		   if(decyzja=='A' || decyzja=='a' || (ytemp!=y && last_value=='a'))
@@ -136,96 +138,103 @@ int main()
 		   NXT::Motor::Stop(&comm, OUT_B, 0);
 		   NXT::Motor::Stop(&comm, OUT_C, 0);
 		  }
-
+       
 		  //Przed uzyciem serwo sprawdzamy numer portu do którego jest podl¹czony,
 		  if(decyzja=='K' || decyzja=='k')
 		  {
 			NXT::Motor::Stop(&comm, OUT_B, 0);
 		    NXT::Motor::Stop(&comm, OUT_C, 0);
 			NXT::Motor::Stop(&comm, OUT_A, 0);
-			NXT::Sensor::SetSonarOff(&comm, IN_1);
+			NXT::Sensor::SetSonarOff(&comm, IN_1);			
 			NXT::Sensor::SetColorOff(&comm,IN_3);
 
 			break;
 		  }
 
-		  if (decyzja=='F' || decyzja=='f') //linia po lewej
+		  if (decyzja=='F' || decyzja=='f') //linia po prawej
 		  {
 			  last_value = 'f';
-			  int left, right;
-			  if (kbhit() == true)
-			  {
-				  decyzja == getch();
-				  if (decyzja == 'h' || decyzja == 'K') break;
-				  last_value = 'f';
-				  color=NXT::Sensor::GetValue(&comm,IN_3);
-				 // Wait(50);
-
-			 /* if (color >= 0 && color <= 70)
-			  {
-				/*NXT::Motor::SetForward(&comm, OUT_B, x);
-				NXT::Motor::SetForward(&comm, OUT_C, x);
-				  NXT::Motor::SetReverse(&comm, OUT_B, y); //prawo
-				  NXT::Motor::SetForward(&comm, OUT_C, y);
-
-			  }
-			  else*/
-			  /********************************************
-			  Moze zadziala
-			  ********************************************/
-			  /*if (color <= 60)
+			  while (true){
+				  if (kbhit() == true) 
+				  {
+					  decyzja = getch();
+					  if (decyzja == 'h' || decyzja == 'H')
+					  {
+						  last_value = 'h';
+						  NXT::Motor::SetForward(&comm, OUT_B, 0);
+							NXT::Motor::SetForward(&comm, OUT_C, 0);
+						NXT::Motor::Stop(&comm, OUT_B, 0);
+						NXT::Motor::Stop(&comm, OUT_C, 0);
+						  break;
+					  }
+				  }
+				color=NXT::Sensor::GetValue(&comm,IN_3);
+				  int left, right;
+			  if (color <= 60)
 			  {
 				  
 				  NXT::Motor::SetForward(&comm, OUT_B, 2*y);
-				  NXT::Motor::Reverse(&comm, OUT_C, 2*y);
+				  NXT::Motor::SetForward(&comm, OUT_C, y/2);
 			  }
-			  else if (color <= 105 && color > 60)
+			  else if (color <= 105 && color > 150)//color > 60)
 			  {
-				  left = round(2.0*y* (1 - (t - 60)/90.0)); //150-60=90 <- MAX - MIN
+				  left = 2*y* (1 - (color - 60)/90); //150-60=90 <- MAX - MIN
 				  right = 2*y - left;
 			      NXT::Motor::SetForward(&comm, OUT_B, left);
-			      NXT::Motor::SetReverse(&comm, OUT_C, right);
-			  }
-			  else if (color < 150 && color > 150)
-			  {
-				  left = round(2.0*y* (1 - (t - 60)/90.0)); //150-60=90 <- MAX - MIN
-				  right = 2*y - left;
-			      NXT::Motor::SetReverse(&comm, OUT_B, left);
 			      NXT::Motor::SetForward(&comm, OUT_C, right);
 			  }
 			  else
 			  {
-				  NXT::Motor::Reverse(&comm, OUT_B, 2*y);
+				  NXT::Motor::SetForward(&comm, OUT_B, y/2);
 				  NXT::Motor::SetForward(&comm, OUT_C, 2*y);
-			  }*/
-			  
-			  
-			   if (color > 150)
-			  {
-				  NXT::Motor::SetForward(&comm, OUT_B, y); //lewo
-				  NXT::Motor::SetReverse(&comm, OUT_C, y);
-				  NXT::Motor::SetForward(&comm, OUT_B, x);
-				  NXT::Motor::SetForward(&comm, OUT_C, x);
 			  }
-			  else if (color < 60)
-			  {
-				  NXT::Motor::SetReverse(&comm, OUT_B, y); //prawo
-				  NXT::Motor::SetForward(&comm, OUT_C, y);
-				  NXT::Motor::SetForward(&comm, OUT_B, x);
-				  NXT::Motor::SetForward(&comm, OUT_C, x);
-			  }
-			  else
-			  {
-				  NXT::Motor::SetForward(&comm, OUT_B, x);
-				  NXT::Motor::SetForward(&comm, OUT_C, x);
-			  } 
 			  }
 			  
 			 
-
 		  }
 
-          //Przed uzyciem sprawdzamy numer portu do którego jest podl¹czony sensor,
+		  if (decyzja == 'l' || decyzja == 'L')
+		  {
+			  last_value = 'l';
+			  while (true){
+				  if (kbhit() == true) 
+				  {
+					  decyzja = getch();
+					  if (decyzja == 'h' || decyzja == 'H')
+					  {
+						  last_value = 'h';
+						  NXT::Motor::SetForward(&comm, OUT_B, 0);
+							NXT::Motor::SetForward(&comm, OUT_C, 0);
+						NXT::Motor::Stop(&comm, OUT_B, 0);
+						NXT::Motor::Stop(&comm, OUT_C, 0);
+						  break;
+					  }
+				  }
+				color=NXT::Sensor::GetValue(&comm,IN_3);
+				  int left, right;
+
+				  if (color <= 60)
+				  {
+					  NXT::Motor::SetForward(&comm, OUT_B, y/2);
+					  NXT::Motor::SetForward(&comm, OUT_C, 2*y);
+				  }
+				  else if (color <= 105 && color > 150)
+				  {
+					  left = 2*y* (1 - (color - 60)/90); //150-60=90 <- MAX - MIN
+				  right = 2*y - left;
+			      NXT::Motor::SetForward(&comm, OUT_B, right);
+			      NXT::Motor::SetForward(&comm, OUT_C, left);
+				  }
+				  else
+				  {
+					  NXT::Motor::SetForward(&comm, OUT_B, 2*y);
+				  NXT::Motor::SetForward(&comm, OUT_C, y/2);
+				  }
+			  }
+		  }
+		 
+			
+          //Przed uzyciem sprawdzamy numer portu do którego jest podl¹czony sensor, 
 		  if(decyzja=='U' || decyzja=='u')
 		   {
 		    NXT::Sensor::SetSonar(&comm, IN_1);
@@ -233,7 +242,7 @@ int main()
 		    NXT::Sensor::SetSonarOff(&comm, IN_1);
 		   }
 
-		  //Przed uzyciem sprawdzamy numer portu do którego jest podl¹czony sensor,
+		  //Przed uzyciem sprawdzamy numer portu do którego jest podl¹czony sensor, 
 		  if(decyzja=='C' || decyzja=='c')
 		   {
 			 color=NXT::Sensor::GetValue(&comm,IN_3);
@@ -246,7 +255,7 @@ int main()
 		}while(decyzja!='k' && decyzja!='K');
 
 		NXT::StopProgram(&comm);
-
+		
 	}
 	NXT::Close(&comm); //close communication with NXT
 
@@ -280,3 +289,4 @@ int main()
 // Wait(50);
 // cout<<"SoundValue = "<<NXT::Sensor::GetValue(&comm, IN_2);
 // }
+/**/
